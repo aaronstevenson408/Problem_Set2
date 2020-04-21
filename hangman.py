@@ -99,9 +99,8 @@ def is_guess_valid(guess): # Checks if the guess is valid
 
   Returns:
       Bool : If the guess is a valid lowercase letter guess return true
-  ''' 
-  print (get_available_letters(guess)) 
-  if (len(guess) == 1 and str.isalpha(guess) and guess in get_available_letters(letters_guessed)): #checks the validity of guess returns #TODO: is this the best way to do this ?
+  '''  
+  if (len(guess) == 1 and str.isalpha(guess) and get_available_letters(guess)): #checks the validity of guess returns #TODO: is this the best way to do this ?
     return True
   else:
     #TODO: Print Warning if already guessed or is wrong(two different prints)
@@ -206,8 +205,8 @@ def hangman(secret_word): #Main Function
     game_round(secret_word,guess_threshold,letters_guessed)# Starts a game round
     #print(is_guess_valid())
 
-secret_word = 'apple' # takes in secret word for testing 
-hangman(secret_word)
+secret_word = 'apple' # takes in secret word for testing
+hangman(secret_word) # start the program
 #letters_guessed = ['e','i','k','p','r','s']
 #letters_guessed = ['a','p','l','e']
 #print(is_word_guessed(secret_word,letters_guessed))
