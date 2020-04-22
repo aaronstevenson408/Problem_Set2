@@ -147,7 +147,7 @@ def guess_warning(is_guess_valid,warning_delta,guess,guessed_word):
   if is_guess_valid != True:
     warning_incr += 1
     if is_guess_valid == 'incorrect_type':
-      print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"guesses left")#TODO:This is going 
+      print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"warning left")#TODO:This is going 
     elif is_guess_valid == 'already_guessed':
       print("Oops !! You've already chosen that letter. The word so far is :", guessed_word )
   #print("warning_incr",warning_incr)
@@ -177,7 +177,7 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
   guess_delta = guess_threshold - guess_counter
   warning_counter = 0 # Set the warning counter to the starting value (0)
   warning_threshold = 3 #Sets Warning threshold
-  warning_delta = 3
+  warning_delta = warning_threshold - warning_counter
   guessed_word = get_guessed_word(secret_word,letters_guessed)
   ##### Start Round ######
   while is_word_guessed(secret_word,letters_guessed)!= True: # Continue until the word is guessed 
@@ -186,13 +186,19 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
     
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
+    print("guess_valid")
     warning_incr = guess_warning(guess_valid,warning_delta,guess,guessed_word)
-    if guess_valid:
-      guess_counter += 1# Increments guess counter  
-      letters_guessed.append(guess)
-    else: 
+    #TODO: Probably a better way to do this 
+    print(guess_valid == False and warning_delta > 0)
+    print(guess_valid == False and warning_delta > 0)
+    if (guess_valid == False and warning_delta > 0):
+      print("warning_counter prior",warning_counter)
       warning_counter += warning_incr # Increments warning counter 
-     # Appends the guess to the guessed letters list
+      print("warning_counter prior",warning_counter)
+    else: 
+      guess_counter += 1 # Increments guess counter
+    if guess_valid:
+      letters_guessed.append(guess)
     guessed_word = get_guessed_word(secret_word,letters_guessed)
     print(guessed_word)
     
