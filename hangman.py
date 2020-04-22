@@ -152,7 +152,7 @@ def guess_warning(is_guess_valid,warning_threshold,warning_counter,guess,guessed
     if is_guess_valid == 'incorrect_type':
       print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"warning left")#TODO:This is going 
     elif is_guess_valid == 'already_guessed':
-      print("Oops !! You've already chosen that letter. The word so far is :", guessed_word )
+      print("Oops !! You've already chosen that letter. The word so far is :", guessed_word,"You have",warning_delta,"warning left" )
   #print("warning_incr",warning_incr)
   return warning_incr
 
@@ -206,7 +206,8 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
       #print("warning_counter after",warning_counter)
     else: 
       guess_counter += 1 # Increments guess counter
-      
+      if guess_delta == 0:
+        break 
     #print("guess in get_available_letters(letters_guessed)",guess in get_available_letters(letters_guessed))
     #print("guess_valid",guess_valid)
     if guess_valid and guess in get_available_letters(letters_guessed):
