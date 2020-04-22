@@ -127,8 +127,18 @@ def is_guess_valid(guess,letters_guessed): # Checks if the guess is valid
     return True
 def guess_warning(is_guess_valid, warning_counter,warning_threshold,guess,guessed_word):
   '''
-  guess_warning - takes in a is_guess_valid response  and prints a warning and returns warning increment if needed 
-  '''
+  guess_warning [summary]
+
+  Args:
+      is_guess_valid (bool): [description]
+      warning_counter ([type]): [description]
+      warning_threshold ([type]): [description]
+      guess ([type]): [description]
+      guessed_word ([type]): [description]
+
+  Returns:
+      int: warning_counter_
+  '''  
   #TODO: (Possible) remove counter and just decrement threshold
   #TODO:  Figure Why not returning correct statement 
   #print("is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)",is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)
@@ -138,9 +148,8 @@ def guess_warning(is_guess_valid, warning_counter,warning_threshold,guess,guesse
       print("Oops !! ", guess, ",is not a valid letter. You have",(warning_threshold - warning_counter),"guesses left")#TODO:This is going 
     elif is_guess_valid == 'already_guessed':
       print("Oops !! You've already chosen that letter. The word so far is :", guessed_word )
-
-    return warning_counter
-  return 0
+    return warning_counter_inc
+  return 0  
 
 def game_start(secret_word, guess_threshold): # Introduction Text
   '''is_word_guessed - Prints the intro that includes the length of guess and the guess threshold
@@ -186,25 +195,26 @@ def user_guess(guess_threshold,guess_counter,warning_counter): # Takes user gues
   user_input = "" # resets user input variable 
   warning_incr = 0 # resets warning_increment
   warning_threshold = 3 # sets warning threshold 
-
+ 
   while is_guess_valid(user_input) != True:  # take user input until it is a valid guess 
-    user_input = input("Enter your Guess: ")# takes user input
+    # user_input = input("Enter your Guess: ")# takes user input
+    guess = (input("Enter your Guess: ")).lower()
+    # ### (possible) warnining function / increment function
 
-    ### (possible) warnining function / increment function
-
-    if is_guess_valid (user_input) == False: #checks if guess is not valid  
-      if warning_incr < warning_threshold: #checks if warning has not been met 
-        warning_incr += 1 # increment warning counter 
-        print("Warning, Please enter a valid letter:", warning_incr ,"out of",warning_threshold) #print warning statement 
-      else: #if warnings have been used up increase guess count 
-        guess_incr += 1 
-        
-    else: #if correct increment guess counter 
-      guess_incr += 1
-    #####(possible) this will probably end up in gamestate after refactor
-    if guess_incr >= guess_threshold: # if the guessing has already hit the threshold break out of gettig input
-          user_input = None # Remove any user input
-          break # break out of guessing     
+    # if is_guess_valid (user_input) == False: #checks if guess is not valid  
+    #   if warning_incr < warning_threshold: #checks if warning has not been met 
+    #     warning_incr += 1 # increment warning counter 
+    #     print("Warning, Please enter a valid letter:", warning_incr ,"out of",warning_threshold) #print warning statement 
+    #   else: #if warnings have been used up increase guess count 
+    #     guess_incr += 1 
+    guess_warning(is_guess_valid(guess),warning_counter,warning_threshold,guess,guessed_word)
+    warning_counter += warning_counter_inc
+    #else: #if correct increment guess counter 
+  guess_incr += 1
+  #####(possible) this will probably end up in gamestate after refactor
+  if guess_incr >= guess_threshold: # if the guessing has already hit the threshold break out of gettig input
+        user_input = None # Remove any user input
+        break # break out of guessing     
   #dont need #print ("Guess number:",guess_incr ) #print guess number
 
   return tuple((user_input,guess_incr,warning_incr)) #Return the input and increments 
