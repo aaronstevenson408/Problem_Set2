@@ -126,7 +126,7 @@ def is_guess_valid(guess,letters_guessed): # Checks if the guess is valid
     #print("return true")
     return True
 
-def guess_warning(is_guess_valid,warning_delta,guess,guessed_word):
+def guess_warning(is_guess_valid,warning_threshold,warning_counter,guess,guessed_word):
   '''
   guess_warning [summary]
 
@@ -141,11 +141,14 @@ def guess_warning(is_guess_valid,warning_delta,guess,guessed_word):
       int: warning_incr
   '''  
   warning_incr = 0
+  warning_delta = warning_threshold - warning_counter
   #TODO: (Possible) remove counter and just decrement threshold
   #TODO:  Figure Why not returning correct statement 
   #print("is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)",is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)
-  if is_guess_valid != True:
+  print("warning_delta",warning_delta)
+  if is_guess_valid != True and warning_delta > 0:
     warning_incr += 1
+    warning_delta = warning_threshold - warning_incr - warning_counter
     if is_guess_valid == 'incorrect_type':
       print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"warning left")#TODO:This is going 
     elif is_guess_valid == 'already_guessed':
@@ -187,10 +190,10 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
     print("guess_valid",guess_valid)
-    warning_incr = guess_warning(guess_valid,warning_delta,guess,guessed_word)
-    print("warning_incr",warning_incr)
+    warning_incr = guess_warning(guess_valid,warning_threshold,warning_counter,guess,guessed_word)
+    print("warning_incr",warning_incr,"\n")
     #TODO: Probably a better way to do this 
-    print("guess_valid,warning_delta",guess_valid,warning_delta)
+    print("guess_valid,warning_delta",guess_valid,warning_delta,"\n")
     print(guess_valid == False and warning_delta > 0)
     if (guess_valid != True and warning_delta > 0):
       print("warning_counter prior",warning_counter)
