@@ -126,7 +126,7 @@ def is_guess_valid(guess,letters_guessed): # Checks if the guess is valid
     #print("return true")
     return True
 
-def guess_warning(is_guess_valid, warning_counter,warning_threshold,guess,guessed_word):
+def guess_warning(is_guess_valid,warning_delta,guess,guessed_word):
   '''
   guess_warning [summary]
 
@@ -147,7 +147,7 @@ def guess_warning(is_guess_valid, warning_counter,warning_threshold,guess,guesse
   if is_guess_valid != True:
     warning_incr += 1
     if is_guess_valid == 'incorrect_type':
-      print("Oops !! ", guess, ",is not a valid letter. You have",(warning_threshold - warning_counter),"guesses left")#TODO:This is going 
+      print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"guesses left")#TODO:This is going 
     elif is_guess_valid == 'already_guessed':
       print("Oops !! You've already chosen that letter. The word so far is :", guessed_word )
   #print("warning_incr",warning_incr)
@@ -168,12 +168,17 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
   '''
   #TODO: Change round logic to make more sense  (possible gamestate condition function)
   # Something like  is_guess_valid(input("Enter your Guess: "))
+
+  #######################
+  ##  Round Variables  ##
+  #######################
   guess_counter = 0 # Set counter to starting value (0)
   guess_threshold = 6 # Sets Guess threshold
   guess_delta = guess_threshold - guess_counter
   warning_counter = 0 # Set the warning counter to the starting value (0)
   warning_threshold = 3 #Sets Warning threshold
   warning_delta = 3
+  guessed_word = get_guessed_word(secret_word,letters_guessed)
   ##### Start Round ######
   while is_word_guessed(secret_word,letters_guessed)!= True: # Continue until the word is guessed 
     #### VVVV needs refactoring VVVV####
@@ -181,12 +186,13 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
     
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
-    warning_incr = guess_warning(guess_valid)
-    
-    guess_counter += guess_incr # Increments guess counter  
-    warning_counter += warning_incr # Increments warning counter 
-    if guess != None :
-      letters_guessed.append(guess) # Appends the guess to the guessed letters list
+    warning_incr = guess_warning(guess_valid,warning_delta,guess,guessed_word)
+    if guess_valid:
+      guess_counter += 1# Increments guess counter  
+      letters_guessed.append(guess)
+    else: 
+      warning_counter += warning_incr # Increments warning counter 
+     # Appends the guess to the guessed letters list
     
     print(letters_guessed)
     
@@ -196,17 +202,17 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
   else : 
     print("!!!!!!!!!!!!!!!!!!!!!!!!You Have Won The Round !!!!!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!!!!!!!Good Job !!!!!!!!!!!!!!!!!!!)!!!!!")
 
-def user_guess(guess_threshold,guess_counter,warning_counter,letters_guessed,secret_word,guess_threshold): # Takes user guess (possbly not needed)
-  '''user_guess Takes in no argurments, User Supplies guess input, user_guess Validates Input and
-  returns guess  and  a guess counter increment 
+# def user_guess(guess_threshold,guess_counter,warning_counter,letters_guessed,secret_word,guess_threshold): # Takes user guess (possbly not needed)
+#   '''user_guess Takes in no argurments, User Supplies guess input, user_guess Validates Input and
+#   returns guess  and  a guess counter increment 
 
-  Returns:
-      tuple : (guess,  guess increment )
-  '''
-  guess = (input("Enter your Guess: ")).lower()
-  guess_valid = is_guess_valid(guess, letters_guessed)
-  warning_incr = guess_warning()
-  return tuple((guess,guess_incr,warning_incr))
+#   Returns:
+#       tuple : (guess,  guess increment )
+#   '''
+#   guess = (input("Enter your Guess: ")).lower()
+#   guess_valid = is_guess_valid(guess, letters_guessed)
+#   warning_incr = guess_warning()
+#   return tuple((guess,guess_incr,warning_incr))
   '''
   #starting variables
   # guess_incr = 0 # sets the increment to zero 
