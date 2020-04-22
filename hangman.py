@@ -186,15 +186,17 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
     
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
-    print("guess_valid")
+    print("guess_valid",guess_valid)
     warning_incr = guess_warning(guess_valid,warning_delta,guess,guessed_word)
+    print("warning_incr",warning_incr)
     #TODO: Probably a better way to do this 
+    print("guess_valid,warning_delta",guess_valid,warning_delta)
     print(guess_valid == False and warning_delta > 0)
-    print(guess_valid == False and warning_delta > 0)
-    if (guess_valid == False and warning_delta > 0):
+    if (guess_valid != True and warning_delta > 0):
       print("warning_counter prior",warning_counter)
       warning_counter += warning_incr # Increments warning counter 
-      print("warning_counter prior",warning_counter)
+      warning_delta = warning_threshold - warning_counter
+      print("warning_counter after",warning_counter)
     else: 
       guess_counter += 1 # Increments guess counter
     if guess_valid:
