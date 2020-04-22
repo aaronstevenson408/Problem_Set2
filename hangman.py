@@ -193,8 +193,8 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
     else: 
       warning_counter += warning_incr # Increments warning counter 
      # Appends the guess to the guessed letters list
-    
-    print(letters_guessed)
+    guessed_word = get_guessed_word(secret_word,letters_guessed)
+    print(guessed_word)
     
     if guess_counter >= guess_threshold: # Checks if guess threshold has been met if so print losing statement then break
       print("You Have Lost the Round")
@@ -202,41 +202,7 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
   else : 
     print("!!!!!!!!!!!!!!!!!!!!!!!!You Have Won The Round !!!!!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!!!!!!!Good Job !!!!!!!!!!!!!!!!!!!)!!!!!")
 
-# def user_guess(guess_threshold,guess_counter,warning_counter,letters_guessed,secret_word,guess_threshold): # Takes user guess (possbly not needed)
-#   '''user_guess Takes in no argurments, User Supplies guess input, user_guess Validates Input and
-#   returns guess  and  a guess counter increment 
 
-#   Returns:
-#       tuple : (guess,  guess increment )
-#   '''
-#   guess = (input("Enter your Guess: ")).lower()
-#   guess_valid = is_guess_valid(guess, letters_guessed)
-#   warning_incr = guess_warning()
-#   return tuple((guess,guess_incr,warning_incr))
-  '''
-  #starting variables
-  # guess_incr = 0 # sets the increment to zero 
-  # guess = "" # resets user input variable 
-  # warning_incr = 0 # resets warning_increment
-  # warning_threshold = 3 # sets warning threshold 
-  # guessed_word = get_guessed_word(secret_word,letters_guessed)
-  # while is_guess_valid(guess,letters_guessed) != True:  # take user input until it is a valid guess 
-  #   guess = (input("Enter your Guess: ")).lower()
-  #   guess_valid = is_guess_valid(guess,letters_guessed)
-  #   warning_counter += guess_warning(guess_valid,warning_counter,warning_threshold,guess,guessed_word)
-  #   print ("warning_counter",warning_counter)
-  #   if warning_counter >= warning_threshold:
-  #     guess = None
-  #     break
-  # guess_incr += 1
-  # print("guess_incr += 1",guess_incr)
-  #####(possible) this will probably end up in gamestate after refactor
-  #(i think not needed ) if guess_incr >= guess_threshold: # if the guessing has already hit the threshold break out of gettig input
-        #user_input = None # Remove any user input
-        #break # break out of guessing     
-  #dont need #print ("Guess number:",guess_incr ) #print guess number
-  return tuple((guess,guess_incr,warning_incr)) #Return the input and increments 
-  '''
 def hangman(secret_word): #Main Function
     '''
     secret_word: string, the secret word to guess.
