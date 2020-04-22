@@ -64,9 +64,10 @@ def is_word_guessed(secret_word, letters_guessed): # Checks if Letters guessed c
   letters_guessed = letters_guessed[:] # Takes a Copy of the letters_guessed list
   result = all(elem in letters_guessed for elem in secret_word_list)# Checks if all of the letters that have been guessed(elem in letters guessed) are in 
   return result # Returns result
+
 def get_guessed_word(secret_word, letters_guessed): # Returns Secret word with blanks for unguessed letters
     '''get_guessed_word - Joins to a string the guessed letters and blanks in place of the missing ones 
-
+      (needs to be called and stored before guess_warning)
     Args:
         secret_word (string): the word the user is guessing
         letters_guessed (list (of letters)): which letters have been guessed so far
@@ -76,6 +77,7 @@ def get_guessed_word(secret_word, letters_guessed): # Returns Secret word with b
     '''
     guessed_word = "".join([letter if letter in letters_guessed else " _ " for letter in secret_word]) #If letter guessed is in secret word , join letter , else join blank
     return guessed_word #Returns Guessed Word
+
 def get_available_letters(letters_guessed): # Returns a String of unguessed letters
 
   '''get_available_letters [summary]
@@ -90,7 +92,8 @@ def get_available_letters(letters_guessed): # Returns a String of unguessed lett
   alphabet_list= list(string.ascii_lowercase)# Make a list of lowercase letters in alphabet
   alphabet="".join([letter for letter in alphabet_list if letter not in letters_guessed ] ) # Adds letters in the alphabet to a string that are not in the letters guessed list
   return alphabet #Returns String    
-def is_guess_valid(guess): # Checks if the guess is valid 
+
+def is_guess_valid(guess,letters_guessed): # Checks if the guess is valid 
   '''
   is_guess_valid - takes in user inputted guess and checks if it is valid
 
@@ -100,13 +103,31 @@ def is_guess_valid(guess): # Checks if the guess is valid
   Returns:
       Bool : If the guess is a valid lowercase letter guess return true
   '''  
-  if (len(guess) == 1 and str.isalpha(guess) and get_available_letters(guess)): #checks the validity of guess returns #TODO: is this the best way to do this ?
+  if (len(guess) == 1 and str.isalpha(guess) and get_available_letters(letters_guessed)): #checks the validity of guess returns #TODO: is this the best way to do this ?
     return True
+  elif not (len(guess) == 1 and str.isalpha(guess)):
+    return 'incorrect_type'
   else:
-    #TODO: Print Warning if already guessed or is wrong(two different prints)
-    #TODO: Take from user guess necessary logic 
-    #TODO: (Possible) Return Guess
-    return False
+    return 'already_guessed'
+
+def guess_warning(is_guess_valid, warning_counter,warning_threshold,guess,guessed_word):
+  '''
+  guess_warning - takes in a is_guess_valid response  and prints a warning and returns warning increment if needed 
+  '''
+
+  #TODO: Print Warning if already guessed or is wrong(two different prints)
+  #TODO: (Possible) 
+  if is_guess_valid != True:
+    warning_counter += 1
+    if is_guess_valid == 'incorrect_type':
+      print("Oops !! ", guess, ",is not a valid letter. You have",(warning_threshold - warning_counter),"guesses left")#TODO:This is going 
+    elif is_guess_valid == 'already_guessed':
+      print("Oops !! You Already Guessed ",guess,".")
+    else:
+      raise Exception("Somehow you entered an invalid char that is undefined, char was:",is_guess_valid)
+    
+    return warning_counter
+  
 
 def game_start(secret_word, guess_threshold): # Introduction Text
   '''is_word_guessed - Prints the intro that includes the length of guess and the guess threshold
@@ -117,6 +138,7 @@ def game_start(secret_word, guess_threshold): # Introduction Text
   print("Hello, and Welcome to Hangman" )
   print("The Word To Guess is",len(secret_word),"letters long" )
   print("You have",guess_threshold,"guesses")
+
 def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game round 
   '''game_round this takes in the starting parameters 
   '''
@@ -138,6 +160,7 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
       break
   else : 
     print("!!!!!!!!!!!!!!!!!!!!!!!!You Have Won The Round !!!!!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!!!!!!!Good Job !!!!!!!!!!!!!!!!!!!)!!!!!")
+
 def user_guess(guess_threshold,guess_counter,warning_counter): # Takes user guess (possbly not needed)
   '''user_guess Takes in no argurments, User Supplies guess input, user_guess Validates Input and
   returns guess  and  a guess counter increment 
@@ -206,13 +229,20 @@ def hangman(secret_word): #Main Function
     #print(is_guess_valid())
 
 secret_word = 'apple' # takes in secret word for testing
-hangman(secret_word) # start the program
-#letters_guessed = ['e','i','k','p','r','s']
+#hangman(secret_word) # start the program
+letters_guessed = ['e','i','k','p','r','s']
 #letters_guessed = ['a','p','l','e']
+warning_counter  = 0
+guess_incr = 0 # sets the increment to zero 
+guess = input("Enter your Guess: ") # resets user input variable 
+warning_incr = 0 # resets warning_increment
+warning_threshold = 3 # sets warning threshold
+
 #print(is_word_guessed(secret_word,letters_guessed))
 #print(get_guessed_word(secret_word,letters_guessed))
 #print(get_available_letters(letters_guessed))
 #get_available_letters(letters_guessed)
+print(guess_warning(is_guess_valid(guess,letters_guessed),warning_counter,warning_threshold,guess,get_guessed_word(secret_word,letters_guessed)))
 # When you've completed your hangman function,  scroll down to the bottom
 # of the file and uncomment the first two lines to test
 #(hint: you might want to pick your own
