@@ -103,31 +103,44 @@ def is_guess_valid(guess,letters_guessed): # Checks if the guess is valid
   Returns:
       Bool : If the guess is a valid lowercase letter guess return true
   '''  
-  if (len(guess) == 1 and str.isalpha(guess) and get_available_letters(letters_guessed)): #checks the validity of guess returns #TODO: is this the best way to do this ?
-    return True
-  elif not (len(guess) == 1 and str.isalpha(guess)):
+  # print("len(guess)",len(guess))
+  # print("str.isalpha(guess)",str.isalpha(guess))
+  # print("guess in get_available_letters(letters_guessed)",(guess in get_available_letters(letters_guessed)))
+  # if (len(guess) == 1 and str.isalpha(guess) and (guess in get_available_letters(letters_guessed))): #checks the validity of guess returns #TODO: is this the best way to do this ?
+  #   print("return True")
+  #   return True
+  # else:  
+  #   if (len(guess) == 1 and str.isalpha(guess)):
+  #     print("incorrect_type")
+  #     return 'incorrect_type'
+  #   else:
+  #     print('already_guessed')
+  #     return 'already_guessed'
+  if (len(guess) == 1 and str.isalpha(guess)) == False:
+    #print("incorrect_type")
     return 'incorrect_type'
-  else:
+  elif not (guess in get_available_letters(letters_guessed)):
+    #print('already_guessed')
     return 'already_guessed'
-
+  else:
+    #print("return true")
+    return True
 def guess_warning(is_guess_valid, warning_counter,warning_threshold,guess,guessed_word):
   '''
   guess_warning - takes in a is_guess_valid response  and prints a warning and returns warning increment if needed 
   '''
-
-  #TODO: Print Warning if already guessed or is wrong(two different prints)
-  #TODO: (Possible) 
+  #TODO: (Possible) remove counter and just decrement threshold
+  #TODO:  Figure Why not returning correct statement 
+  #print("is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)",is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)
   if is_guess_valid != True:
     warning_counter += 1
     if is_guess_valid == 'incorrect_type':
       print("Oops !! ", guess, ",is not a valid letter. You have",(warning_threshold - warning_counter),"guesses left")#TODO:This is going 
     elif is_guess_valid == 'already_guessed':
-      print("Oops !! You Already Guessed ",guess,".")
-    else:
-      raise Exception("Somehow you entered an invalid char that is undefined, char was:",is_guess_valid)
-    
+      print("Oops !! You've already chosen that letter. The word so far is :", guessed_word )
+
     return warning_counter
-  
+  return 0
 
 def game_start(secret_word, guess_threshold): # Introduction Text
   '''is_word_guessed - Prints the intro that includes the length of guess and the guess threshold
