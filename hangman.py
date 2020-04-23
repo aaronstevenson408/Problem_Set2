@@ -139,7 +139,7 @@ def guess_warning(is_guess_valid,warning_threshold,warning_counter,guess,guessed
   #print("is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)",is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)
   #print("warning_delta",warning_delta)
   if is_guess_valid != True and warning_delta > 0:
-    warning_incr += 1
+    #warning_incr += 1
     warning_delta = warning_threshold - warning_incr - warning_counter
     if is_guess_valid == 'incorrect_type':
       print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"warning left")#TODO:This is going 
@@ -191,15 +191,15 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
     set_deltas(guess_threshold,guess_counter,warning_threshold, warning_threshold)
     round_intro(guess_delta,letters_guessed)
     guess = (input("Enter your Guess: ")).lower()
-    #posssible reconfigure  if guess valid : append statement 
     guess_valid = is_guess_valid(guess, letters_guessed)
     if guess_valid:
       letters_guessed.append(guess)
-    guessed_word = get_guessed_word(secret_word,letters_guessed)
+    get_guessed_word(secret_word,letters_guessed)
     round_math()
+    guess_warning()
     #set_deltas()  #may not need 
     round_outro()
-    round_stater()
+    round_state()
     if guess_valid == True and guess in guessed_word:
       print("Good Guess:",guessed_word)  
     else: 
