@@ -127,19 +127,11 @@ def is_guess_valid(guess,letters_guessed): # Checks if the guess is valid
     return True
 
 def guess_warning(is_guess_valid,warning_threshold,warning_counter,guess,guessed_word):
-  '''
-  guess_warning [summary]
-
-  Args:
-      is_guess_valid (bool): [description]
-      warning_counter ([type]): [description]
-      warning_threshold ([type]): [description]
-      guess ([type]): [description]
-      guessed_word ([type]): [description]
-
-  Returns:
-      int: warning_incr
-  '''  
+  #############################################
+  ### TODO : Guess Warining Does Too Much   ###
+  ### should only print out statments after ###
+  ### all the math is done                  ###
+  #############################################
   warning_incr = 0
   warning_delta = warning_threshold - warning_counter
   #TODO: (Possible) remove counter and just decrement threshold
@@ -186,42 +178,33 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
   letters_guessed = letters_guessed[:]
   ##### Start Round ######
   while is_word_guessed(secret_word,letters_guessed)!= True: # Continue until the word is guessed 
-    #### VVVV needs refactoring VVVV####
-    #guess,guess_incr,warning_incr = user_guess(guess_threshold,guess_counter,warning_counter,letters_guessed, secret_word) # Takes user guess and validates
+    #set values to the current value  
     guess_delta = guess_threshold - guess_counter
     warning_delta = warning_threshold - warning_counter
+    #TODO print statements function
     print ("You have",guess_delta,"guesses left")
     print ("Available letters:\n",get_available_letters(letters_guessed))
+
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
-    #print("guess_valid",guess_valid)
-    warning_incr = guess_warning(guess_valid,warning_threshold,warning_counter,guess,guessed_word)
-    #print("warning_incr",warning_incr,"\n")
-    #print("guess_valid,warning_delta",guess_valid,warning_delta,"\n")
-    #print(guess_valid == False and warning_delta > 0)
+    #TODO guess math function
     if (guess_valid != True and warning_delta > 0):
-      #print("warning_counter prior",warning_counter)
-      warning_counter += warning_incr # Increments warning counter 
+      warning_counter += guess_warning(guess_valid,warning_threshold,warning_counter,guess,guessed_word) # Increments warning counter 
       warning_delta = warning_threshold - warning_counter
-      #print("warning_counter after",warning_counter)
     else: 
       guess_counter += 1 # Increments guess counter
       if guess_delta == 0:
         break 
-    #print("guess in get_available_letters(letters_guessed)",guess in get_available_letters(letters_guessed))
-    #print("guess_valid",guess_valid)
+
     if guess_valid and guess in get_available_letters(letters_guessed):
       letters_guessed.append(guess)
-      #print(letters_guessed)
       guessed_word = get_guessed_word(secret_word,letters_guessed)
-    #DONE: figure out print statements for guesse
-    if guess_valid and guess in guessed_word:
+
+    if guess_valid == True and guess in guessed_word:
       print("Good Guess:",guessed_word)  
-    else:
+    else: 
       print(guessed_word)
     print("---------------------------------------")
-    
-    
     if guess_counter >= guess_threshold: # Checks if guess threshold has been met if so print losing statement then break
       print("You Have Lost the Round")
       break
@@ -355,7 +338,7 @@ def hangman_with_hints(secret_word):
 
 
 if __name__ == "__main__":
-     #pass
+    # pass
 
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
