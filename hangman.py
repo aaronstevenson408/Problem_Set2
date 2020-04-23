@@ -148,6 +148,14 @@ def guess_warning(is_guess_valid,warning_threshold,warning_counter,guess,guessed
   #print("warning_incr",warning_incr)
   return warning_incr
 
+def round_math():
+  vowel = "aeiou"
+  return
+  #if guess_valid == True:
+def set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter):
+  guess_delta = guess_threshold - guess_counter
+  warning_delta = warning_threshold - warning_counter
+  return tuple(warning_delta,guess_delta)
 def game_start(secret_word, guess_threshold): # Introduction Text
   '''is_word_guessed - Prints the intro that includes the length of guess and the guess threshold
   
@@ -158,48 +166,40 @@ def game_start(secret_word, guess_threshold): # Introduction Text
   print("The Word To Guess is",len(secret_word),"letters long" )
   print("You start with ",guess_threshold,"guesses") #TODO: add warnings also
   print("---------------------------------------")
-
+def round_intro(guess_delta,letters_guessed):
+  print ("You have",guess_delta,"guesses left")
+  print ("Available letters:\n",get_available_letters(letters_guessed))
 def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game round 
   '''game_round this takes in the starting parameters 
   '''
   #TODO: Change round logic to make more sense  (possible gamestate condition function)
   # Something like  is_guess_valid(input("Enter your Guess: "))
 
-  #######################
-  ##  Round Variables  ##
-  #######################
+  ##############################
+  ##  INIT : Round Variables  ##
+  ##############################
   guess_counter = 0 # Set counter to starting value (0)
+  guess_delta = 0
   guess_threshold = 6 # Sets Guess threshold
-  guess_delta = guess_threshold - guess_counter
   warning_counter = 0 # Set the warning counter to the starting value (0)
+  warning_delta = 0
   warning_threshold = 3 #Sets Warning threshold
-  warning_delta = warning_threshold - warning_counter
-  guessed_word = get_guessed_word(secret_word,letters_guessed)
+  guessed_word = ""
   letters_guessed = letters_guessed[:]
   ##### Start Round ######
   while is_word_guessed(secret_word,letters_guessed)!= True: # Continue until the word is guessed 
-    #set values to the current value  
-    guess_delta = guess_threshold - guess_counter
-    warning_delta = warning_threshold - warning_counter
-    #TODO print statements function
-    print ("You have",guess_delta,"guesses left")
-    print ("Available letters:\n",get_available_letters(letters_guessed))
-
+    set_deltas(guess_threshold,guess_counter,warning_threshold, warning_threshold)
+    round_intro(guess_delta,letters_guessed)
     guess = (input("Enter your Guess: ")).lower()
+    #posssible reconfigure  if guess valid : append statement 
     guess_valid = is_guess_valid(guess, letters_guessed)
-    #TODO guess math function
-    if (guess_valid != True and warning_delta > 0):
-      warning_counter += guess_warning(guess_valid,warning_threshold,warning_counter,guess,guessed_word) # Increments warning counter 
-      warning_delta = warning_threshold - warning_counter
-    else: 
-      guess_counter += 1 # Increments guess counter
-      if guess_delta == 0:
-        break 
-
-    if guess_valid and guess in get_available_letters(letters_guessed):
+    if guess_valid:
       letters_guessed.append(guess)
-      guessed_word = get_guessed_word(secret_word,letters_guessed)
-
+    guessed_word = get_guessed_word(secret_word,letters_guessed)
+    round_math()
+    #set_deltas()  #may not need 
+    round_outro()
+    round_stater()
     if guess_valid == True and guess in guessed_word:
       print("Good Guess:",guessed_word)  
     else: 
@@ -244,8 +244,8 @@ def hangman(secret_word): #Main Function
     game_round(secret_word,guess_threshold,letters_guessed)# Starts a game round
     #print(is_guess_valid())
 
-#secret_word = 'apple' # takes in secret word for testing
-#hangman(secret_word) # start the program
+secret_word = 'apple' # takes in secret word for testing
+hangman(secret_word) # start the program
 #letters_guessed = ['e','i','k','p','r','s']
 #letters_guessed = ['a','p','l','e']
 
@@ -338,13 +338,13 @@ def hangman_with_hints(secret_word):
 
 
 if __name__ == "__main__":
-    # pass
+     pass
 
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
     
-    secret_word = choose_word(wordlist)
-    hangman(secret_word)
+    #secret_word = choose_word(wordlist)
+    #hangman(secret_word)
 
 ###############
     
