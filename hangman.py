@@ -173,7 +173,7 @@ def get_round_state(secret_word,guessed_word,guess_delta,score):
     elif guess_delta > 0:
       return False
     else:
-      print ("Sorry, You ran out of guesses. Your word was",guessed_word)
+      print ("Sorry, You ran out of guesses. Your word was",secret_word)
       print ("Thank you for playing")
     return True
 def game_start(secret_word, guess_threshold): # Introduction Text
@@ -186,15 +186,21 @@ def game_start(secret_word, guess_threshold): # Introduction Text
   print("The Word To Guess is",len(secret_word),"letters long" )
   print("You start with ",guess_threshold,"guesses") #TODO: add warnings also
   print("---------------------------------------")
-def round_intro(guess_delta,letters_guessed):
-  print ("You have",guess_delta,"guesses left")
+def round_intro(guess_delta,warning_delta,letters_guessed):
+  print ("You have",guess_delta,"guesses left, warnings left", warning_delta)
   print ("Available letters:\n",get_available_letters(letters_guessed))
-def round_outro(guess_valid, guess,guessed_word,warning_delta):
-    if is_guess_valid != True and warning_delta > 0:
-      if is_guess_valid == 'incorrect_type':
-        print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"warning left")#TODO:This is going 
-      elif is_guess_valid == 'already_guessed':
-        print("Oops !! You've already chosen that letter. The word so far is :", guessed_word,"You have",warning_delta,"warning left" )
+def round_outro(guess_valid, guess,guessed_word,guess_delta,warning_delta):
+    if guess_valid != True:
+      if guess_valid == 'incorrect_type':
+        if warning_delta > 0:
+          print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"warning left")#TODO:This is going 
+        else:
+          print("Oops !! ", guess, ",is not a valid letter. You are out of warnings, Used guess. Guesses left:",guess_delta)
+      elif guess_valid == 'already_guessed':
+        if warning_delta > 0:
+          print("Oops !! You've already chosen that letter. The word so far is :", guessed_word,"You have",warning_delta,"warning left" ) 
+        else:
+          print("Oops !! You've already chosen that letter. The word so far is :", guessed_word,"You are out of warnings, Used guess. Guesses left:",guess_delta)   
     elif guess_valid == True and guess in guessed_word:
       print("Good Guess:",guessed_word)  
     else: 
@@ -222,7 +228,7 @@ def game_round(secret_word,guess_threshold,letters_guessed,score): #Runs the gam
   ##### Start Round ######
   while round_state != True: # Continue until the word is guessed 
     warning_delta,guess_delta = set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter)
-    round_intro(guess_delta,letters_guessed)
+    round_intro(guess_delta,warning_delta,letters_guessed)
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
     if guess_valid == True:
@@ -230,8 +236,8 @@ def game_round(secret_word,guess_threshold,letters_guessed,score): #Runs the gam
     guessed_word=get_guessed_word(secret_word,letters_guessed)
     warning_counter,guess_counter = round_math(guess_valid,guess,warning_delta,secret_word,guess_counter,warning_counter)
     warning_delta,guess_delta = set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter)  #may not need 
-    guess_warning(guess_valid,warning_delta,guess,guessed_word)
-    round_outro(guess_valid, guess,guessed_word,warning_delta)# something wrong
+   # guess_warning(guess_valid,warning_delta,guess,guessed_word)
+    round_outro(guess_valid, guess,guessed_word,guess_delta,warning_delta)# something wrong
     score = get_score(guess_delta,secret_word)
     round_state = get_round_state(secret_word,guessed_word,guess_delta,score)
   return score # wont be used till i implement high score
@@ -268,8 +274,8 @@ def hangman(secret_word): #Main Function
     game_round(secret_word,guess_threshold,letters_guessed,score)# Starts a game round
     #print(is_guess_valid())
 
-secret_word = 'apple' # takes in secret word for testing
-hangman(secret_word) # start the program
+#secret_word = 'apple' # takes in secret word for testing
+#hangman(secret_word) # start the program
 #letters_guessed = ['e','i','k','p','r','s']
 #letters_guessed = ['a','p','l','e']
 
@@ -362,13 +368,13 @@ def hangman_with_hints(secret_word):
 
 
 if __name__ == "__main__":
-     pass
+    #pass
 
     # To test part 2, comment out the pass line above and
     # uncomment the following two lines.
     
-    #secret_word = choose_word(wordlist)
-    #hangman(secret_word)
+    secret_word = choose_word(wordlist)
+    hangman(secret_word)
 
 ###############
     
