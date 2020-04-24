@@ -155,7 +155,7 @@ def round_math():
 def set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter):
   guess_delta = guess_threshold - guess_counter
   warning_delta = warning_threshold - warning_counter
-  return tuple(warning_delta,guess_delta)
+  return warning_delta,guess_delta
 def game_start(secret_word, guess_threshold): # Introduction Text
   '''is_word_guessed - Prints the intro that includes the length of guess and the guess threshold
   
@@ -194,7 +194,7 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
   letters_guessed = letters_guessed[:]
   ##### Start Round ######
   while is_word_guessed(secret_word,letters_guessed)!= True: # Continue until the word is guessed 
-    set_deltas(guess_threshold,guess_counter,warning_threshold, warning_threshold)
+    warning_delta,guess_delta = set_deltas(guess_threshold,guess_counter,warning_threshold, warning_threshold)
     round_intro(guess_delta,letters_guessed)
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
