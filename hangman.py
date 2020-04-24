@@ -169,6 +169,12 @@ def game_start(secret_word, guess_threshold): # Introduction Text
 def round_intro(guess_delta,letters_guessed):
   print ("You have",guess_delta,"guesses left")
   print ("Available letters:\n",get_available_letters(letters_guessed))
+def round_outro(guess_valid, guess,guessed_word):
+    if guess_valid == True and guess in guessed_word:
+      print("Good Guess:",guessed_word)  
+    else: 
+      print(guessed_word)
+    print("---------------------------------------")
 def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game round 
   '''game_round this takes in the starting parameters 
   '''
@@ -195,16 +201,12 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
     if guess_valid:
       letters_guessed.append(guess)
     get_guessed_word(secret_word,letters_guessed)
-    round_math()
-    guess_warning()
+    #round_math()
+    #guess_warning()
     #set_deltas()  #may not need 
-    round_outro()
-    round_state()
-    if guess_valid == True and guess in guessed_word:
-      print("Good Guess:",guessed_word)  
-    else: 
-      print(guessed_word)
-    print("---------------------------------------")
+    round_outro(guess_valid, guess,guessed_word)
+    #round_state()
+
     if guess_counter >= guess_threshold: # Checks if guess threshold has been met if so print losing statement then break
       print("You Have Lost the Round")
       break
