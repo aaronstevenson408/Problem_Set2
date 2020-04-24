@@ -126,27 +126,21 @@ def is_guess_valid(guess,letters_guessed): # Checks if the guess is valid
     #print("return true")
     return True
 
-def guess_warning(is_guess_valid,warning_threshold,warning_counter,guess,guessed_word):
+def guess_warning(is_guess_valid,warning_delta,guess,guessed_word):
   #############################################
-  ### TODO : Guess Warining Does Too Much   ###
+  ### DONE : Guess Warining Does Too Much   ###
   ### should only print out statments after ###
   ### all the math is done                  ###
   #############################################
-  warning_incr = 0
-  warning_delta = warning_threshold - warning_counter
   #TODO: (Possible) remove counter and just decrement threshold
   #TODO:  Figure Why not returning correct statement 
   #print("is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)",is_guess_valid, warning_counter,warning_threshold,guess,guessed_word)
   #print("warning_delta",warning_delta)
   if is_guess_valid != True and warning_delta > 0:
-    #warning_incr += 1
-    warning_delta = warning_threshold - warning_incr - warning_counter
     if is_guess_valid == 'incorrect_type':
       print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"warning left")#TODO:This is going 
     elif is_guess_valid == 'already_guessed':
       print("Oops !! You've already chosen that letter. The word so far is :", guessed_word,"You have",warning_delta,"warning left" )
-  #print("warning_incr",warning_incr)
-  return warning_incr
 
 def round_math(guess_valid,guess,warning_delta,guessed_word,guess_counter,warning_counter):
   vowel = "aeiou"
@@ -168,15 +162,16 @@ def set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter):
   warning_delta = warning_threshold - warning_counter
   return warning_delta,guess_delta
 def get_score(guess_delta,secret_word):
-  score = guess_delta * (len(set(secret_word)))
+  difficulty = len(set(secret_word))
+  score = guess_delta * difficulty
   return score
 def get_round_state(secret_word,guessed_word,guess_delta,score):
-  if guess_delta > 0 : 
-    return False
-  else:
     if secret_word == guessed_word: 
       print ("Congratulation, you have won!")
+      print ("You guessed:", guessed_word)
       print ("You're Total Score is :", score)  
+    elif guess_delta > 0:
+      return False
     else:
       print ("Sorry, You ran out of guesses. Your word was",guessed_word)
       print ("Thank you for playing")
@@ -222,6 +217,7 @@ def game_round(secret_word,guess_threshold,letters_guessed,score): #Runs the gam
   warning_delta = 0
   warning_threshold = 3 #Sets Warning threshold
   guessed_word = ""
+  
   letters_guessed = letters_guessed[:]
   ##### Start Round ######
   while round_state != True: # Continue until the word is guessed 
@@ -229,15 +225,16 @@ def game_round(secret_word,guess_threshold,letters_guessed,score): #Runs the gam
     round_intro(guess_delta,letters_guessed)
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
-    if guess_valid:
+    if guess_valid == True:
       letters_guessed.append(guess)
     guessed_word=get_guessed_word(secret_word,letters_guessed)
     warning_counter,guess_counter = round_math(guess_valid,guess,warning_delta,secret_word,guess_counter,warning_counter)
-    set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter)  #may not need 
-    round_outro(guess_valid, guess,guessed_word,warning_delta)
-    get_score(guess_delta,secret_word)
-    get_round_state(secret_word,guessed_word,guess_delta,score)
-  #return score # wont be used till i implement high score
+    warning_delta,guess_delta = set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter)  #may not need 
+    guess_warning(guess_valid,warning_delta,guess,guessed_word)
+    round_outro(guess_valid, guess,guessed_word,warning_delta)# something wrong
+    score = get_score(guess_delta,secret_word)
+    round_state = get_round_state(secret_word,guessed_word,guess_delta,score)
+  return score # wont be used till i implement high score
 def hangman(secret_word): #Main Function
     '''
     secret_word: string, the secret word to guess.
