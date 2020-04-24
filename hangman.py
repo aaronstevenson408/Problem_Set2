@@ -76,7 +76,7 @@ def get_guessed_word(secret_word, letters_guessed): # Returns Secret word with b
       which letters in secret_word have been guessed so far.
     '''
     guessed_word = "".join([letter if letter in letters_guessed else " _ " for letter in secret_word]) #If letter guessed is in secret word , join letter , else join blank
-    return guessed_word #Returns Guessed Word
+    return guessed_word#Returns Guessed Word
 
 def get_available_letters(letters_guessed): # Returns a String of unguessed letters
 
@@ -148,14 +148,39 @@ def guess_warning(is_guess_valid,warning_threshold,warning_counter,guess,guessed
   #print("warning_incr",warning_incr)
   return warning_incr
 
-def round_math():
+def round_math(guess_valid,guess,warning_delta,guessed_word,guess_counter,warning_counter):
   vowel = "aeiou"
-  return
-  #if guess_valid == True:
+  if guess_valid != True:
+    if warning_delta > 0:
+      warning_counter +=1
+    else:
+      guess_counter += 1
+  else:
+    if (guess in secret_word) != True and (guess in vowel):
+      guess_counter += 2
+    elif(guess in guessed_word) != True  and (guess in vowel) != True:
+      guess_counter += 1
+    else:
+      guess_counter += 0      
+  return warning_counter,guess_counter
 def set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter):
   guess_delta = guess_threshold - guess_counter
   warning_delta = warning_threshold - warning_counter
   return warning_delta,guess_delta
+def get_score(guess_delta,secret_word):
+  score = guess_delta * (len(set(secret_word)))
+  return score
+def get_round_state(secret_word,guessed_word,guess_delta,score):
+  if guess_delta > 0 : 
+    return False
+  else:
+    if secret_word == guessed_word: 
+      print ("Congratulation, you have won!")
+      print ("You're Total Score is :", score)  
+    else:
+      print ("Sorry, You ran out of guesses. Your word was",guessed_word)
+      print ("Thank you for playing")
+    return True
 def game_start(secret_word, guess_threshold): # Introduction Text
   '''is_word_guessed - Prints the intro that includes the length of guess and the guess threshold
   
@@ -169,13 +194,18 @@ def game_start(secret_word, guess_threshold): # Introduction Text
 def round_intro(guess_delta,letters_guessed):
   print ("You have",guess_delta,"guesses left")
   print ("Available letters:\n",get_available_letters(letters_guessed))
-def round_outro(guess_valid, guess,guessed_word):
-    if guess_valid == True and guess in guessed_word:
+def round_outro(guess_valid, guess,guessed_word,warning_delta):
+    if is_guess_valid != True and warning_delta > 0:
+      if is_guess_valid == 'incorrect_type':
+        print("Oops !! ", guess, ",is not a valid letter. You have",warning_delta,"warning left")#TODO:This is going 
+      elif is_guess_valid == 'already_guessed':
+        print("Oops !! You've already chosen that letter. The word so far is :", guessed_word,"You have",warning_delta,"warning left" )
+    elif guess_valid == True and guess in guessed_word:
       print("Good Guess:",guessed_word)  
     else: 
-      print(guessed_word)
+      print("Oops !! ", guess, ",is not in the word:",guessed_word)
     print("---------------------------------------")
-def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game round 
+def game_round(secret_word,guess_threshold,letters_guessed,score): #Runs the game round 
   '''game_round this takes in the starting parameters 
   '''
   #TODO: Change round logic to make more sense  (possible gamestate condition function)
@@ -184,6 +214,7 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
   ##############################
   ##  INIT : Round Variables  ##
   ##############################
+  round_state = False
   guess_counter = 0 # Set counter to starting value (0)
   guess_delta = 0
   guess_threshold = 6 # Sets Guess threshold
@@ -193,27 +224,20 @@ def game_round(secret_word,guess_threshold,letters_guessed): #Runs the game roun
   guessed_word = ""
   letters_guessed = letters_guessed[:]
   ##### Start Round ######
-  while is_word_guessed(secret_word,letters_guessed)!= True: # Continue until the word is guessed 
-    warning_delta,guess_delta = set_deltas(guess_threshold,guess_counter,warning_threshold, warning_threshold)
+  while round_state != True: # Continue until the word is guessed 
+    warning_delta,guess_delta = set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter)
     round_intro(guess_delta,letters_guessed)
     guess = (input("Enter your Guess: ")).lower()
     guess_valid = is_guess_valid(guess, letters_guessed)
     if guess_valid:
       letters_guessed.append(guess)
-    get_guessed_word(secret_word,letters_guessed)
-    #round_math()
-    #guess_warning()
-    #set_deltas()  #may not need 
-    round_outro(guess_valid, guess,guessed_word)
-    #round_state()
-
-    if guess_counter >= guess_threshold: # Checks if guess threshold has been met if so print losing statement then break
-      print("You Have Lost the Round")
-      break
-  else : 
-    print("!!!!!!!!!!!!!!!!!!!!!!!!You Have Won The Round !!!!!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!!!!!!!Good Job !!!!!!!!!!!!!!!!!!!)!!!!!")
-
-
+    guessed_word=get_guessed_word(secret_word,letters_guessed)
+    warning_counter,guess_counter = round_math(guess_valid,guess,warning_delta,secret_word,guess_counter,warning_counter)
+    set_deltas(guess_threshold,guess_counter,warning_threshold,warning_counter)  #may not need 
+    round_outro(guess_valid, guess,guessed_word,warning_delta)
+    get_score(guess_delta,secret_word)
+    get_round_state(secret_word,guessed_word,guess_delta,score)
+  #return score # wont be used till i implement high score
 def hangman(secret_word): #Main Function
     '''
     secret_word: string, the secret word to guess.
@@ -242,8 +266,9 @@ def hangman(secret_word): #Main Function
   
     guess_threshold = 6 # sets guess threshold
     letters_guessed = [] # makes a empty list for the letter to be stored
+    score = 0
     game_start(secret_word,guess_threshold)# runs the game intro script
-    game_round(secret_word,guess_threshold,letters_guessed)# Starts a game round
+    game_round(secret_word,guess_threshold,letters_guessed,score)# Starts a game round
     #print(is_guess_valid())
 
 secret_word = 'apple' # takes in secret word for testing
